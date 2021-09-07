@@ -39,20 +39,21 @@ fn offset<T>(n: u32) -> *const c_void {
 
 
 // == // Modify and complete the function below for the first task
-// unsafe fn FUNCTION_NAME(ARGUMENT_NAME: &Vec<f32>, ARGUMENT_NAME: &Vec<u32>) -> u32 { } 
+// unsafe fn FUNCTION_NAME(ARGUMENT_NAME: &Vec<f32>, ARGUMENT_NAME: &Vec<u32>) -> u32 { }
 unsafe fn VAO(vertCor: &Vec<f32>, indices: &Vec<u32>) -> u32 {
 
-    // unsigned int vao = 0;
+    // Variables used for binding
     let mut vao: u32 = 0;
     let mut buffer_id: u32 = 0;
     let vertex_index: u32 = 0;
     let mut index_buffer_id: u32 = 0;
 
-
+    // Bind VAO
     gl::GenVertexArrays(1, &mut vao);
     assert_ne!(vao, 0); // make sure 0 is not returned
     gl::BindVertexArray(vao);
-    
+
+    // Buffers for vertice coordinates
     gl::GenBuffers(1, &mut buffer_id);
     assert_ne!(buffer_id, 0); // make sure 0 is not returned
     gl::BindBuffer(gl::ARRAY_BUFFER, buffer_id);
@@ -61,7 +62,8 @@ unsafe fn VAO(vertCor: &Vec<f32>, indices: &Vec<u32>) -> u32 {
     gl::BufferData(gl::ARRAY_BUFFER, byte_size_of_array(& vertCor), pointer_to_array(&vertCor), gl::STATIC_DRAW);
     // 3*size_of::<f32>()
     // let p:u32 = 0;
-    gl::VertexAttribPointer(vertex_index, 3, gl::FLOAT, gl::FALSE, 0, ptr::null());
+    let size = 3;
+    gl::VertexAttribPointer(vertex_index, size, gl::FLOAT, gl::FALSE, 0, ptr::null());
 
     gl::EnableVertexAttribArray(vertex_index);
 
@@ -73,7 +75,7 @@ unsafe fn VAO(vertCor: &Vec<f32>, indices: &Vec<u32>) -> u32 {
     gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, byte_size_of_array(& indices), pointer_to_array(&indices), gl::STATIC_DRAW);
 
     return vao;
-} 
+}
 
 
 fn main() {
@@ -137,7 +139,7 @@ fn main() {
 
             gl::BindVertexArray(draw_vao);
 
-            
+
             VAO(& v, & indices);
 
             gl::DrawElements(gl::TRIANGLES, 3, gl::UNSIGNED_INT, ptr::null());
@@ -154,11 +156,11 @@ fn main() {
         //        .link();
         let shader = unsafe {
             shader::ShaderBuilder::new()
-                    .attach_file("./shaders/simple.vert")
-                    .attach_file("./shaders/simple.frag")
+                    .attach_file("./shaders/simple.vert");
+                    .attach_file("./shaders/simple.frag");
                     .link();
         }
-        
+
         unsafe {
             gl::UseProgram(0);
         }
