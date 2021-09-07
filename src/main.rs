@@ -40,45 +40,81 @@ fn offset<T>(n: u32) -> *const c_void {
 
 // == // Modify and complete the function below for the first task
 // unsafe fn FUNCTION_NAME(ARGUMENT_NAME: &Vec<f32>, ARGUMENT_NAME: &Vec<u32>) -> u32 { }
-unsafe fn VAO(vertCor: &Vec<f32>, indices: &Vec<u32>) -> u32 {
+unsafe fn triangle_vao(vertices: &Vec<f32>, indices: &Vec<u32>) -> u32 {
 
     // Variables used for binding
     let mut vao: u32 = 0;
-    let mut buffer_id: u32 = 0;
+    let mut vbo: u32 = 0;
     let vertex_index: u32 = 0;
     let mut index_buffer_id: u32 = 0;
 
-    // Bind VAO
+    // Bind triangle_vao
     gl::GenVertexArrays(1, &mut vao);
     assert_ne!(vao, 0); // make sure 0 is not returned
     gl::BindVertexArray(vao);
 
     // Buffers for vertice coordinates
-    gl::GenBuffers(1, &mut buffer_id);
-    assert_ne!(buffer_id, 0); // make sure 0 is not returned
-    gl::BindBuffer(gl::ARRAY_BUFFER, buffer_id);
+    gl::GenBuffers(1, &mut vbo);
+    assert_ne!(vbo, 0); // make sure 0 is not returned
+    gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
 
 
-    gl::BufferData(gl::ARRAY_BUFFER, byte_size_of_array(& vertCor), pointer_to_array(&vertCor), gl::STATIC_DRAW);
-    // 3*size_of::<f32>()
-    // let p:u32 = 0;
-    let size = 3;
-    gl::VertexAttribPointer(vertex_index, size, gl::FLOAT, gl::FALSE, 0, ptr::null());
+    gl::BufferData(
+        gl::ARRAY_BUFFER,
+        byte_size_of_array(vertices),
+        pointer_to_array(vertices),
+        gl::STATIC_DRAW);
+
+    let num_of_components = 3;
+    gl::VertexAttribPointer(
+        vertex_index,
+        num_of_components,
+        gl::FLOAT,
+        gl::FALSE,
+        0,
+        ptr::null());
 
     gl::EnableVertexAttribArray(vertex_index);
 
+    // setup vertex buffer object
     gl::GenBuffers(1, &mut index_buffer_id);
     assert_ne!(index_buffer_id, 0); // make sure 0 is not returned
     gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, index_buffer_id);
+    gl::BufferData(
+        gl::ELEMENT_ARRAY_BUFFER,
+        byte_size_of_array(indices),
+        pointer_to_array(indices),
+        gl::STATIC_DRAW);
 
-
-    gl::BufferData(gl::ELEMENT_ARRAY_BUFFER, byte_size_of_array(& indices), pointer_to_array(&indices), gl::STATIC_DRAW);
-
-    return vao;
+    return vao
 }
 
+unsafe fn draw_scene(count: usize) {
+    gl::FrontFace(gl::CW);
+    gl::DrawElements(gl::TRIANGLE_STRIP, count as i32, gl::UNSIGNED_INT, ptr::null());
+
+}
 
 fn main() {
+
+    // Triangles
+    // let v1: Vec<f32> = vec![-0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0];
+    let v1: Vec<f32> = vec![-1.0, -1.0, 0.0, -1.0, 1.0, 0.0, -0.5, 0.5, 0.0, -0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
+    // let v2: Vec<f32> = vec![0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.5, 0.0, 0.0 ];
+
+    // const VERTICES: [Vertex; 3] =
+    // [-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
+
+    let mut indices: Vec<u32> = vec![];
+    let mut indice: u32 = 0;
+    for i in 0..v1.len(){
+        if (i%3 == 0) {
+        }
+        indices.push(indice);
+        indice += 1;
+    }
+    println!("Result is:{}", v1.len());
+
     // Set up the necessary objects to deal with windows and event handling
     let el = glutin::event_loop::EventLoop::new();
     let wb = glutin::window::WindowBuilder::new()
@@ -116,7 +152,7 @@ fn main() {
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
             gl::DepthFunc(gl::LESS);
-            gl::Enable(gl::CULL_FACE);
+            // gl::Enable(gl::CULL_FACE);
             gl::Disable(gl::MULTISAMPLE);
             gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
@@ -129,21 +165,11 @@ fn main() {
             println!("GLSL\t: {}", util::get_gl_string(gl::SHADING_LANGUAGE_VERSION));
         }
 
-        // == // Set up your VAO here
+        // == // Set up your vao here
         unsafe {
-
-            let v: Vec<f32> = vec![-0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0];
-            let indices: Vec<u32> = vec![0, 1, 2];
-
             let draw_vao: u32 = 0;
-
             gl::BindVertexArray(draw_vao);
-
-
-            VAO(& v, & indices);
-
-            gl::DrawElements(gl::TRIANGLES, 3, gl::UNSIGNED_INT, ptr::null());
-
+            let vao = triangle_vao(& v1, & indices);
         }
 
         // Basic usage of shader helper:
@@ -156,10 +182,13 @@ fn main() {
         //        .link();
         let shader = unsafe {
             shader::ShaderBuilder::new()
-                    .attach_file("./shaders/simple.vert");
-                    .attach_file("./shaders/simple.frag");
-                    .link();
-        }
+                .attach_file("./shaders/simple.vert")
+                .attach_file("./shaders/simple.frag")
+                .link()
+                .activate();
+        };
+
+        // shader
 
         unsafe {
             gl::UseProgram(0);
@@ -207,9 +236,7 @@ fn main() {
 
                 // Issue the necessary commands to draw your scene here
 
-
-
-
+                draw_scene(v1.len());
 
             }
 
