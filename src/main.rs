@@ -151,11 +151,12 @@ fn main() {
             1.0, -1.0, 0.0    // 9
         ];
         let indices: Vec<u32> = vec![
-            0, 2, 5,
-            1, 2, 3,
-            5, 8, 9,
-            3, 8, 4,
-            6, 8, 7
+            5, 2, 0,
+            1, 2, 3, //works
+            9, 8, 5,
+            3, 8, 4, //works
+            7, 8, 6,
+            6, 2, 7
         ];
 
 
@@ -184,6 +185,7 @@ fn main() {
                 .activate()
                 //assignment says activate it, but doesnt seemed to be needed. this only runs the useProgram function
         };
+        //unsafe {shader.activate();} //this didnt work
 
         /* unsafe {
             gl::UseProgram(0);
