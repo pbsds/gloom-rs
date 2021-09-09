@@ -91,7 +91,7 @@ unsafe fn triangle_vao(vertices: &Vec<f32>, indices: &Vec<u32>) -> u32 {
 
 unsafe fn draw_scene(count: usize) {
     gl::FrontFace(gl::CW);
-    gl::DrawElements(gl::TRIANGLE_STRIP, count as i32, gl::UNSIGNED_INT, ptr::null());
+    gl::DrawElements(gl::TRIANGLES, count as i32, gl::UNSIGNED_INT, ptr::null()); // TRIANGLE_STRIP can be used to easier build up geometry
 
 }
 
@@ -105,13 +105,14 @@ fn main() {
     // const VERTICES: [Vertex; 3] =
     // [-0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
 
-    let mut indices: Vec<u32> = vec![];
-    let mut indice: u32 = 0;
-    for i in 0..v1.len() {
-        indices.push(indice);
-        indice += 1;
-    }
-    println!("Result is:{}", v1.len());
+    // let mut indices: Vec<u32> = vec![];
+    // let mut indice: u32 = 0;
+    // for i in 0..v1.len() {
+    //     indices.push(indice);
+    //     indice += 1;
+    // }
+
+    // println!("Result is:{}", v1.len());
 
     // Set up the necessary objects to deal with windows and event handling
     let el = glutin::event_loop::EventLoop::new();
@@ -242,9 +243,6 @@ fn main() {
         //generating the vao_id to the triangle that are getting drawed.
         let vao_id = unsafe{ triangle_vao(& vertices, & indices) };
 
-
-
-
         // Basic usage of shader helper:
         // The example code below returns a shader object, which contains the field `.program_id`.
         // The snippet is not enough to do the assignment, and will need to be modified (outside of
@@ -263,9 +261,10 @@ fn main() {
         };
 
 
-        unsafe {
-            gl::UseProgram(0);
-        }
+        // Dissable to use custom frag shader*
+        // unsafe {
+        //     gl::UseProgram(0);
+        // }
 
         // Used to demonstrate keyboard handling -- feel free to remove
         let mut _arbitrary_number = 0.0;
@@ -309,7 +308,7 @@ fn main() {
 
                 // Issue the necessary commands to draw your scene here
 
-                draw_scene(v1.len());
+                draw_scene(vertices.len());
                 gl::FrontFace(gl::CW); //CCW for counter clockwise, CW for Clockwise
                 //draw the elements mode: triangle, number of points/count: lenght of the indices, type and void* indices
 
