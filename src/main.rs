@@ -99,7 +99,7 @@ fn main() {
 
     // Triangles
     // let v1: Vec<f32> = vec![-0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0];
-    let v1: Vec<f32> = vec![-1.0, -1.0, 0.0, -1.0, 1.0, 0.0, -0.5, 0.5, 0.0, -0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
+    // let v1: Vec<f32> = vec![-1.0, -1.0, 0.0, -1.0, 1.0, 0.0, -0.5, 0.5, 0.0, -0.6, -0.6, 0.0, 0.6, -0.6, 0.0, 0.0, 0.6, 0.0, -0.5, -0.5, 0.0, 0.5, -0.5, 0.0, 0.0, 0.5, 0.0];
     // let v2: Vec<f32> = vec![0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.5, 0.0, 0.0 ];
 
     // const VERTICES: [Vertex; 3] =
@@ -107,9 +107,7 @@ fn main() {
 
     let mut indices: Vec<u32> = vec![];
     let mut indice: u32 = 0;
-    for i in 0..v1.len(){
-        if (i%3 == 0) {
-        }
+    for i in 0..v1.len() {
         indices.push(indice);
         indice += 1;
     }
@@ -153,7 +151,7 @@ fn main() {
             gl::Enable(gl::DEPTH_TEST);
             gl::DepthFunc(gl::LESS);
             gl::Enable(gl::CULL_FACE); //need to disable this to make mirroring to work, havent found a work around
-            //edit: By using gl::frontface we change the direction it is drawed.  
+            //edit: By using gl::frontface we change the direction it is drawed.
             gl::Disable(gl::MULTISAMPLE);
             gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
@@ -192,9 +190,9 @@ fn main() {
         //remember to draw the correct order. right corner->top-> left corner
         /* let indices: Vec<u32> = vec![
             5, 2, 0,
-            1, 2, 3, 
+            1, 2, 3,
             9, 8, 5,
-            3, 8, 4, 
+            3, 8, 4,
             7, 8, 6,
             6, 2, 7
         ]; */
@@ -204,11 +202,11 @@ fn main() {
 
         //task 2a
         // == // Set up your vao here
-        unsafe {
-            let draw_vao: u32 = 0;
-            gl::BindVertexArray(draw_vao);
-            let vao = triangle_vao(& v1, & indices);
-        }
+        // unsafe {
+        //     let draw_vao: u32 = 0;
+        //     gl::BindVertexArray(draw_vao);
+        //     let vao = triangle_vao(& v1, & indices);
+        // }
 
         /* let vertices: Vec<f32> = vec![
             0.6, -0.8, 1.0,  // 0
@@ -227,7 +225,7 @@ fn main() {
             2, 1, 0
         ];*/
 
-        //Task 2d 
+        //Task 2d
         //changing the simple.vert files positions
 
         let vertices: Vec<f32> = vec![
@@ -241,18 +239,11 @@ fn main() {
         ];
 
 
-       
-
-
-
-
-
-
         //generating the vao_id to the triangle that are getting drawed.
-        let vao_id = unsafe{ VAO(& vertices, & indices) };
+        let vao_id = unsafe{ triangle_vao(& vertices, & indices) };
 
 
-    
+
 
         // Basic usage of shader helper:
         // The example code below returns a shader object, which contains the field `.program_id`.
@@ -268,13 +259,13 @@ fn main() {
                 .attach_file("./shaders/simple.vert")
                 .attach_file("./shaders/simple.frag")
                 .link()
-                //assignment says activate it, but doesnt seemed to be needed. this only runs the useProgram function
+                .activate() //assignment says activate it, but doesnt seemed to be needed. this only runs the useProgram function
         };
 
 
         unsafe {
             gl::UseProgram(0);
-        } */
+        }
 
         // Used to demonstrate keyboard handling -- feel free to remove
         let mut _arbitrary_number = 0.0;
