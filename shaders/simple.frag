@@ -2,21 +2,35 @@
 
 out vec4 color;
 
-void main()
-{
-    //color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
-    if(gl_FragCoord.x % 2 ==0)
-        if(gl_FragCoord.y % 2 == 0)
-            color = vec4(0.0f, 0.0f, 0.0f, 1.0);
-            
-        else
-            color = vec4(1.0f, 1.0f, 1.0f, 1.0);
+void checkarboard(in float coordinate, in uint range, out bool result) {
+
+    uint x = uint(mod(coordinate, range));
+
+    if(x<range/2)
+        result = bool(0);
     else
-        if(gl_FragCoord.y % 2 == 0)
-            
-            color = vec4(1.0f, 1.0f, 1.0f, 1.0);
-            
-        else
-            color = vec4(0.0f, 0.0f, 0.0f, 1.0);
+        result = bool(1);
+
 }
 
+void main()
+{
+
+    bool checker_x;
+    bool checker_y;
+
+    checkarboard(gl_FragCoord.x, 50, checker_x);
+    checkarboard(gl_FragCoord.y, 50, checker_y);
+
+    if(checker_y)
+        if(checker_x)
+            color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        else
+            color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    else
+        if(!checker_x)
+            color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        else
+            color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+}
