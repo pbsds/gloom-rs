@@ -82,15 +82,41 @@
 
         overlays.default = final: prev: { inherit (self.packages.${system}) gloom-rs; };
 
-        devShells.default = pkgs.mkShell {
-          inherit buildInputs;
-          nativeBuildInputs = nativeBuildInputs ++ [ pkgs.rustup ];
+        devShells = let
+          makeShell = extraShellHook: pkgs.mkShell {
+            inherit buildInputs;
+            nativeBuildInputs = nativeBuildInputs ++ [ pkgs.rustup ];
 
-          inherit LD_LIBRARY_PATH;
+            inherit LD_LIBRARY_PATH;
 
-          shellHook = ''
-            rustup override set stable
-          '';
+            shellHook = ''
+              rustup override set stable
+            '';
+          };
+
+          nixGLWrappedShell = nixGLPkg: nixGLExecutable: 
+            makeShell ''
+              alias nixgl="${nixGL.packages.${system}.${nixGLPkg}}/bin/${nixGLExecutable}";
+              alias nixgl-run="nixgl -- cargo run";
+            '';
+
+          nixGLWrappedShellWithSameName = nixGLPkg:
+            nixGLWrappedShell nixGLPkg nixGL.packages.${system}.${nixGLPkg}.name;
+        in {
+          default = self.devShells.${system}.nixos;
+
+          # Running "cargo run" in this shell only works on NixOS.
+          nixos = makeShell "";
+
+          # These shells allow you to run "cargo run" through nixGL on non-NixOS machines,
+          # by using the alias "nixgl-run"
+          #
+          # Note that the 'auto' version might fail for some systems.
+          # Running the version for you graphics card can fix the problem.
+          auto = nixGLWrappedShell "nixGLDefault" "nixGL";
+          nvidia = nixGLWrappedShellWithSameName "nixGLNvidia";
+          nvidiaBumblebee = nixGLWrappedShellWithSameName "nixGLNvidiaBumblebee";
+          intel = nixGLWrappedShellWithSameName "nixGLIntel";
         };
 
         apps = let
@@ -101,14 +127,15 @@
                 self.packages.${system}.default
               }/bin/gloom-rs");
           };
+
           nixGLWrapWithSameName = nixGLPkg:
-            nixGLWrap nixGLPkg "${nixGL.packages.${system}.${nixGLPkg}.name}";
+            nixGLWrap nixGLPkg nixGL.packages.${system}.${nixGLPkg}.name;
         in {
-          default = self.apps.${system}.nixosCompatible;
+          default = self.apps.${system}.nixos;
 
           # This runs the app raw. It will not work on non-nixos machines.
           # For more info, see: https://nixos.wiki/wiki/Nixpkgs_with_OpenGL_on_non-NixOS
-          nixosCompatible = {
+          nixos = {
             type = "app";
             program = "${self.packages.${system}.default}/bin/gloom-rs";
           };
@@ -117,7 +144,8 @@
           # Example:
           #   $ NIXPKGS_ALLOW_UNFREE=1 nix run .#nvidia --impure
           #
-          # Also note that the Auto version might not work properly for some systems.
+          # Note that the 'auto' version might fail for some systems.
+          # Running the version for you graphics card can fix the problem.
           auto = nixGLWrap "nixGLDefault" "nixGL";
           nvidia = nixGLWrapWithSameName "nixGLNvidia";
           nvidiaBumblebee = nixGLWrapWithSameName "nixGLNvidiaBumblebee";
