@@ -121,3 +121,7 @@ The composite transofrmation is made up of two affine transformations:
 - To rortate the horizontal we may rotate the triangle along the z-axis. This can be done using the `get_rotation_matrix(theta, dir)` function, stored in the util.rs file.
 
 To save computation these two matrixes are then multipled before the final matrix multiplication.
+
+Here is the resulting image
+
+![Rotated and recolored](./images/rotated_red_triangle.png)
