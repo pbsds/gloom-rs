@@ -4,8 +4,8 @@
 # Change them as you see fit.
 title: TDT4195 Exercise X
 author:
-- Gyrd Bannamule Gyrdsson
-- Gjavleik Britonis Podebusk
+  - Gyrd Bannamule Gyrdsson
+  - Gjavleik Britonis Podebusk
 date: \today # This is a latex command, ignored for HTML output
 lang: en-US
 papersize: a4
@@ -36,7 +36,7 @@ This is a HTML-style comment, not visible in the final PDF.
 This is a paragraph.
 This is the same paragraph.
 
-This is a new paragraph, with *italic*, **bold**, and `inline code` formatting.
+This is a new paragraph, with _italic_, **bold**, and `inline code` formatting.
 It is possible to use special classes to format text: [this is a test]{.smallcaps}.
 
 ```rust
@@ -49,26 +49,26 @@ println!("Hello, {}", 42);
 This[^this_is_a_unique_footnote_label] is a footnote. <!-- defined below -->
 This^[Footnotes can also be written inline] is also a footnote.
 
+[this]: https://www.uio.no
 
-[This]: https://www.uio.no
 [^this_is_a_unique_footnote_label]: In footnotes you can write anything tangentially related.
 
-* This
-* is
-* a
-* unordered
-* list
+- This
+- is
+- a
+- unordered
+- list
 
 1. This
 1. is
 1. a
 1. ordered
 1. list
-    a. with
-    a. sub
-    a. list
+   a. with
+   a. sub
+   a. list
 
-       with multiple paragraphs
+   with multiple paragraphs
 
 This is still on the first page
 
@@ -89,8 +89,7 @@ This
 : is a definition
 
 > this is a
-block quote
-
+> block quote
 
 This is a paragraph with _inline_ \LaTeX\ style math: $\frac{1}{2}$.
 Below is a math _block_:
@@ -98,7 +97,6 @@ Below is a math _block_:
 $$
     \int_{a}^{b} f(x)dx
 $$
-
 
 | This | is  | a   | table |
 | ---- | --- | --- | ----- |

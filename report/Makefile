@@ -1,5 +1,6 @@
 PANDOC_ARGS += --verbose
 PANDOC_ARGS += --highlight-style=pygments # the default theme
+PANDOC_ARGS += -f markdown-implicit_figures
 
 # Optional filters, needs be installed seperately:
 
