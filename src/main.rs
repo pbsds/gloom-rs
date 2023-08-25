@@ -82,13 +82,13 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>) -> u32 {
     );
 
     // Setup VAP (clean this up?)
-    let attribute_index = 1;
+    let attribute_index = 0;
     gl::VertexAttribPointer(attribute_index, 3, gl::FLOAT, gl::FALSE, 0, ptr::null());
 
     // Enable VBO
     gl::EnableVertexAttribArray(attribute_index);
 
-    // Generate index buffor & ID
+    // Generate index buffer & ID
     let mut ibo_id: u32 = 0;
     gl::GenBuffers(1, &mut ibo_id);
 
@@ -175,15 +175,21 @@ fn main() {
         }
 
         // == // Set up your VAO around here
+
+        // Basic triangles
         let vertices: Vec<f32> = Vec::from([
             0.0, 0.0, 0.0,
             0.0, 0.5, 0.0,
-            -0.5, 0.25, 0.0
+            -0.5, 0.25, 0.5,
+            -0.6,-0.6,0.0,
+            0.6,-0.6,0.0,
+            0.0,0.6,0.0
         ]);
-        let indices: Vec<u32> = Vec::from([0,1,2]);
+        let indices: Vec<u32> = Vec::from([0,1,2,3,4,5]);
+
+        let my_vao;
         unsafe {
-            let my_vao = create_vao(&vertices, &indices);
-            gl::DrawElements(gl::TRIANGLE_STRIP, indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+            my_vao = create_vao(&vertices, &indices);
         }
 
 
@@ -191,18 +197,16 @@ fn main() {
 
         // Basic usage of shader helper:
         // The example code below creates a 'shader' object.
-        // It which contains the field `.program_id` and the method `.activate()`.
+        // It contains the field `.program_id` and the method `.activate()`.
         // The `.` in the path is relative to `Cargo.toml`.
-        // This snippet is not enough to do the exercise, and will need to be modified (outside
+        // This snippet is not, enough to do the exercise, and will need to be modified (outside
         // of just using the correct path), but it only needs to be called once
 
         
         let simple_shader = unsafe {
             shader::ShaderBuilder::new()
                 .attach_file("./shaders/simple.vert")
-                .compile_shader("./shaders/simple.vert", shader::ShaderType::Vertex)
                 .attach_file("./shaders/simple.frag")
-                .compile_shader("./shaders/simple.frag", shader::ShaderType::Fragment)
                 .link()
         };
         unsafe {
@@ -269,7 +273,11 @@ fn main() {
                 gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
                 // == // Issue the necessary gl:: commands to draw your scene here
+                gl::BindVertexArray(my_vao);
+                gl::DrawElements(gl::TRIANGLES, indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
+    
             }
+            
 
             // Display the new color buffer on the display
             context.swap_buffers().unwrap(); // we use "double buffering" to avoid artifacts
