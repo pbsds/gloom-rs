@@ -6,8 +6,8 @@ void main()
 {
     
     int size = 40;
-    if ((mod(floor((gl_FragCoord.x+gl_FragCoord.y)/size),2))==1)
-        color = vec4(0.8f, 0.0f, 0.0f, 1.0f);
+    if (mod(floor(gl_FragCoord.x/size),2)==mod(floor(gl_FragCoord.y/size),2))
+         color = vec4(0.8f, 0.0f, 0.8f, 1.0f);
     else
         color = vec4(1.0f, 0.87f, 0.32f, 1.0f);
     //color = vec4(1.0f,1.0f,1.0f, ((mod(gl_FragCoord.x/40.0f,2))*(mod(gl_FragCoord.y/40.0f,2)))*1.0f);
