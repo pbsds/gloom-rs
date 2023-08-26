@@ -154,9 +154,9 @@ fn main() {
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
             gl::DepthFunc(gl::LESS);
-            //gl::Disable(gl::CULL_FACE);
+            gl::Disable(gl::CULL_FACE);
             gl::Disable(gl::MULTISAMPLE);
-            gl::Enable(gl::BLEND);
+            //gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
             gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
             gl::DebugMessageCallback(Some(util::debug_callback), ptr::null());
@@ -266,8 +266,8 @@ fn main() {
 
         let my_vao;
         unsafe {
-            //my_vao = create_vao(&vertices, &indices);
-            my_vao = create_vao(&face_vertices, &face_indices);
+            my_vao = create_vao(&vertices, &indices);
+            //my_vao = create_vao(&face_vertices, &face_indices);
             //my_vao = create_vao(&task2a_vertices, &task2a_indices);
         }
 
