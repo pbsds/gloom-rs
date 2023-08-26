@@ -178,20 +178,16 @@ fn main() {
 
         // Basic triangles
         let vertices: Vec<f32> = Vec::from([
-            0.0, 0.0, 0.0,
-            0.0, 0.5, 0.0,
-            -0.5, 0.25, 0.5,
-            -0.6,-0.6,0.0,
-            0.6,-0.6,0.0,
-            0.0,0.6,0.0
+            -0.100000, -0.100000, -0.000000,
+            0.100000, -0.100000, -0.000000,
+            -0.100000, 0.100000, 0.000000,
         ]);
-        let indices: Vec<u32> = Vec::from([0,1,2,3,4,5]);
+        let indices: Vec<u32> = Vec::from([1,2,0]);
 
         let my_vao;
         unsafe {
             my_vao = create_vao(&vertices, &indices);
         }
-
 
         // == // Set up your shaders here
 
@@ -202,7 +198,6 @@ fn main() {
         // This snippet is not, enough to do the exercise, and will need to be modified (outside
         // of just using the correct path), but it only needs to be called once
 
-        
         let simple_shader = unsafe {
             shader::ShaderBuilder::new()
                 .attach_file("./shaders/simple.vert")
@@ -274,10 +269,13 @@ fn main() {
 
                 // == // Issue the necessary gl:: commands to draw your scene here
                 gl::BindVertexArray(my_vao);
-                gl::DrawElements(gl::TRIANGLES, indices.len() as i32, gl::UNSIGNED_INT, ptr::null());
-    
+                gl::DrawElements(
+                    gl::TRIANGLES,
+                    indices.len() as i32,
+                    gl::UNSIGNED_INT,
+                    ptr::null(),
+                );
             }
-            
 
             // Display the new color buffer on the display
             context.swap_buffers().unwrap(); // we use "double buffering" to avoid artifacts
