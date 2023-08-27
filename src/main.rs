@@ -184,55 +184,18 @@ fn main() {
         // Basic triangles
         /* */
         let vertices: Vec<f32> = Vec::from([
-            0.0,
-            1.0,
-            0.0,
-            -0.866025404,
-            -0.5,
-            0.0,
-            0.866025404,
-            -0.5,
-            0.0,
-            0.433012702,
-            0.25,
-            0.0,
-            0.0,
-            -0.5,
-            0.0,
-            -0.433012702,
-            0.25,
-            0.0,
-            0.216506351,
-            0.625,
-            0.0,
-            -0.216506351,
-            0.625,
-            0.0,
-            0.0,
-            0.25,
-            0.0,
-            0.649519053,
-            -0.125,
-            0.0,
-            0.433012702,
-            -0.5,
-            0.0,
-            0.216506351,
-            -0.125,
-            0.0,
-            -0.649519053,
-            -0.125,
-            0.0,
-            -0.433012702,
-            -0.5,
-            0.0,
-            -0.216506351,
-            -0.125,
-            0.0,
+            1.0,1.0,0.0,
+            -1.0,1.0,0.0,
+            -1.0,-1.0,0.0,
+            1.0,-1.0,0.0
         ]);
+
+        
+        // Serpinksy traingle
+        /*0, 7, 6, 7, 5, 8, 6, 8, 3, 5, 12, 14, 3, 11, 9, 12, 1, 13, 14, 13, 4, 11, 4, 10, 9, 10,
+            2, */
         let indices: Vec<u32> = Vec::from([
-            0, 7, 6, 7, 5, 8, 6, 8, 3, 5, 12, 14, 3, 11, 9, 12, 1, 13, 14, 13, 4, 11, 4, 10, 9, 10,
-            2,
+            0,1,2,2,3,0
         ]);
 
         let face_vertices: Vec<f32> = Vec::from([
@@ -300,6 +263,13 @@ fn main() {
         // Used to demonstrate keyboard handling for exercise 2.
         let mut _arbitrary_number = 0.0; // feel free to remove
 
+
+
+        // Uniform variable(s) to be used in the shader
+        let mut time: f32 = 0.0;    
+        let delta_t: f32 = 10.0;    // amount to increase the time at each iteration
+
+
         // The main rendering loop
         let first_frame_time = std::time::Instant::now();
         let mut previous_frame_time = first_frame_time;
@@ -309,6 +279,14 @@ fn main() {
             let elapsed = now.duration_since(first_frame_time).as_secs_f32();
             let delta_time = now.duration_since(previous_frame_time).as_secs_f32();
             previous_frame_time = now;
+
+
+            // Bind the shader and update the time uniform
+            unsafe {
+                time += delta_t;     // Update the time value
+                gl::Uniform1f(1, time);
+            }  
+            
 
             // Handle resize events
             if let Ok(mut new_size) = window_size.lock() {
@@ -364,6 +342,7 @@ fn main() {
                     gl::UNSIGNED_INT,
                     ptr::null(),
                 );
+                
             }
 
             // Display the new color buffer on the display
