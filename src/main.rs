@@ -267,7 +267,7 @@ fn main() {
 
         // Uniform variable(s) to be used in the shader
         let mut time: f32 = 0.0;    
-        let delta_t: f32 = 10.0;    // amount to increase the time at each iteration
+        let delta_t: f32 = 0.1;    // amount to increase the time at each iteration
 
 
         // The main rendering loop
@@ -280,12 +280,6 @@ fn main() {
             let delta_time = now.duration_since(previous_frame_time).as_secs_f32();
             previous_frame_time = now;
 
-
-            // Bind the shader and update the time uniform
-            unsafe {
-                time += delta_t;     // Update the time value
-                gl::Uniform1f(1, time);
-            }  
             
 
             // Handle resize events
@@ -300,6 +294,14 @@ fn main() {
                     }
                 }
             }
+
+             // Bind the shader and update the uniform variables
+             unsafe {
+                time += delta_t;     // Update the time value
+                gl::Uniform1f(1, time);
+            }  
+
+
 
             // Handle keyboard input
             if let Ok(keys) = pressed_keys.lock() {
