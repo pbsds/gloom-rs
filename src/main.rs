@@ -14,6 +14,7 @@ use std::{mem, os::raw::c_void, ptr};
 
 mod shader;
 mod util;
+mod obj_parser;
 
 use glutin::event::{
     DeviceEvent,
@@ -175,6 +176,12 @@ fn main() {
         }
 
         // == // Set up your VAO around here
+
+        let model_path = String::from("bingus");
+        let parser = obj_parser::Parser::new(&model_path);
+        parser.parse();
+
+        return 0;
 
         // Basic triangles
         /* */
