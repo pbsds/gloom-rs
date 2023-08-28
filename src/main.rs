@@ -177,8 +177,8 @@ fn main() {
 
         // == // Set up your VAO around here
 
-        let model_path = String::from("bingus");
-        let parser = obj_parser::Parser::new(&model_path);
+        let model_path = String::from("./resources/actual_cube.obj");
+        let mut parser = obj_parser::Parser::new(&model_path);
         parser.parse();
 
         return 0;
