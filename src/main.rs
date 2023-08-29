@@ -120,8 +120,8 @@ fn main() {
     let cb = glutin::ContextBuilder::new().with_vsync(true);
     let windowed_context = cb.build_windowed(wb, &el).unwrap();
     // Uncomment these if you want to use the mouse for controls, but want it to be confined to the screen and/or invisible.
-    // windowed_context.window().set_cursor_grab(true).expect("failed to grab cursor");
-    // windowed_context.window().set_cursor_visible(false);
+    //windowed_context.window().set_cursor_grab(glutin::window::CursorGrabMode::Confined).expect("failed to grab cursor");
+    //windowed_context.window().set_cursor_visible(false);
 
     // Set up a shared vector for keeping track of currently pressed keys
     let arc_pressed_keys = Arc::new(Mutex::new(Vec::<VirtualKeyCode>::with_capacity(10)));
@@ -155,9 +155,9 @@ fn main() {
         unsafe {
             gl::Enable(gl::DEPTH_TEST);
             gl::DepthFunc(gl::LESS);
-            gl::Disable(gl::CULL_FACE);
+            gl::Enable(gl::CULL_FACE);
             gl::Disable(gl::MULTISAMPLE);
-            //gl::Enable(gl::BLEND);
+            gl::Enable(gl::BLEND);
             gl::BlendFunc(gl::SRC_ALPHA, gl::ONE_MINUS_SRC_ALPHA);
             gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
             gl::DebugMessageCallback(Some(util::debug_callback), ptr::null());
@@ -177,11 +177,9 @@ fn main() {
 
         // == // Set up your VAO around here
 
-        let model_path = String::from("./resources/actual_cube.obj");
+        let model_path = String::from("./resources/torus.obj");
         let mut parser = obj_parser::Parser::new(&model_path);
         parser.parse();
-
-        return 0;
 
         // Basic triangles
         /* */
@@ -270,10 +268,12 @@ fn main() {
         let task2a_vertices: Vec<f32> =
             Vec::from([0.6, -0.8, -1.0, 0.0, 0.4, 0.0, -0.8, -0.2, 1.0]);
         let task2a_indices: Vec<u32> = Vec::from([1, 0, 2]);
-
+        let cube_vertices = parser.nonhomogenous_vertices();
+        let cube_indices = parser.vertex_indices();
         let my_vao;
         unsafe {
-            my_vao = create_vao(&vertices, &indices);
+            my_vao = create_vao(&cube_vertices, &cube_indices);
+            //my_vao = create_vao(&vertices, &indices);
             //my_vao = create_vao(&face_vertices, &face_indices);
             //my_vao = create_vao(&task2a_vertices, &task2a_indices);
         }
@@ -360,7 +360,7 @@ fn main() {
                 gl::BindVertexArray(my_vao);
                 gl::DrawElements(
                     gl::TRIANGLES,
-                    indices.len() as i32,
+                    cube_indices.len() as i32,
                     gl::UNSIGNED_INT,
                     ptr::null(),
                 );
