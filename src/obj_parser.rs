@@ -70,11 +70,13 @@ impl Face {
 }
 
 // Make public fields readonly once we're allowed to use other crates
-/// Parses a standard .obj file and stores the information in a usable format. 
+/// Parses a standard .obj file and stores the information in a usable format.
 /// Not all attributes are currently supported. Check the console output for reports on skipped attributes.
 pub struct Parser<'a> {
     pub model_path: &'a Path,
     pub vertices: Vec<Vec<f32>>,
+    pub textures: Vec<Vec<f32>>,
+    pub normals: Vec<Vec<f32>>,
     pub name: String,
     pub group: String,
     pub material: String,
@@ -94,6 +96,8 @@ impl Parser<'_> {
             material_path: String::from(""),
             smoothing_group: 0,
             faces: vec![],
+            textures: vec![],
+            normals: vec![],
         }
     }
 
@@ -161,15 +165,15 @@ impl Parser<'_> {
     }
 
     /// Get a flat vector of all vertices.
-    pub fn flat_vertices(&mut self) -> Vec<f32> {
-        return self.vertices.clone().into_iter().flatten().collect();
+    pub fn flatten_vector(&mut self, vector: Vec<Vec<f32>>) -> Vec<f32> {
+        return vector.into_iter().flatten().collect();
     }
 
     /// Get a flat vector of all vertices without the w coordinate.
     pub fn nonhomogenous_vertices(&mut self) -> Vec<f32> {
         let mut vertices: Vec<f32> = vec![];
         let mut counter = 0;
-        for vertex in self.flat_vertices() {
+        for vertex in self.flatten_vector(self.vertices.clone()) {
             counter += 1;
             counter %= 4;
             if counter == 0 {
@@ -189,7 +193,7 @@ impl Parser<'_> {
             match parsed_coordinate {
                 Ok(coord) => vertex.push(coord),
                 Err(e) => {
-                    println!("Unable to parse, vertex dropped: {}", e);
+                    println!("Broken vertex detected: {}", e);
                     return;
                 }
             }
@@ -204,12 +208,43 @@ impl Parser<'_> {
 
     /// Handle parsing of texture attributes.
     fn handle_texture(&mut self, data: str::Split<&str>) {
-        println!("Textures not implemented!");
+        let mut dimensions = 0;
+        let mut texture: Vec<f32> = vec![];
+        data.for_each(|coordinate| {
+            let parsed_coordinate = coordinate.parse::<f32>();
+            match parsed_coordinate {
+                Ok(coord) => texture.push(coord),
+                Err(e) => {
+                    println!("Broken texture detected: {}", e);
+                    return;
+                }
+            }
+            dimensions += 1;
+        });
+        match dimensions {
+            1 => {
+                texture.push(0.0);
+                texture.push(0.0);
+            }
+            2 => texture.push(0.0),
+            _ => (),
+        }
+        self.textures.push(texture);
     }
 
     /// Handle parsing of normal attributes.
     fn handle_normal(&mut self, data: str::Split<&str>) {
-        println!("Normals not implemented!");
+        let mut normal: Vec<f32> = vec![];
+        data.for_each(|coordinate| {
+            let parsed_coordinate = coordinate.parse::<f32>();
+            match parsed_coordinate {
+                Ok(coord) => normal.push(coord),
+                Err(e) => {
+                    println!("Broken normal detected: {}", e);
+                }
+            }
+        });
+        self.normals.push(normal);
     }
 
     /// Handle parsing of parameter space (freeform) geometry attributes.
