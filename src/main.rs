@@ -25,7 +25,7 @@ const INITIAL_SCREEN_H: u32 = 600;
 // == // Helper functions to make interacting with OpenGL a little bit prettier. You *WILL* need these! // == //
 
 // Get the size of an arbitrary array of numbers measured in bytes
-// Example usage:  pointer_to_array(my_array)
+// Example usage:  byte_size_of_array(my_array)
 fn byte_size_of_array<T>(val: &[T]) -> isize {
     std::mem::size_of_val(&val[..]) as isize
 }
