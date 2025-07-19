@@ -54,7 +54,7 @@ fn main() {
     // Uncomment these if you want to use the mouse for controls, but want it to be confined to the screen and/or invisible.
     // windowed_context.window().set_cursor_grab(true).expect("failed to grab cursor");
     // windowed_context.window().set_cursor_visible(false);
-    
+
     // Set up a shared vector for keeping track of currently pressed keys
     let arc_pressed_keys = Arc::new(Mutex::new(Vec::<VirtualKeyCode>::with_capacity(10)));
     // Make a reference of this vector to send to the render thread
@@ -142,7 +142,7 @@ fn main() {
             }
 
             unsafe {
-                gl::ClearColor(0.163, 0.163, 0.163, 1.0);
+                gl::ClearColor(0.76862745, 0.71372549, 0.94901961, 1.0); // moon raker, full opacity
                 gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
                 // Issue the necessary commands to draw your scene here
@@ -151,7 +151,6 @@ fn main() {
 
 
 
-                
             }
 
             context.swap_buffers().unwrap();
@@ -210,6 +209,9 @@ fn main() {
                     Escape => {
                         *control_flow = ControlFlow::Exit;
                     },
+                    Q => {
+                        *control_flow = ControlFlow::Exit;
+                    }
                     _ => { }
                 }
             },
