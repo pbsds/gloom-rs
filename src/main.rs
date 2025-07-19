@@ -77,6 +77,8 @@ fn main() {
 
         // Set up openGL
         unsafe {
+            gl::Enable(gl::DEPTH);
+            gl::DepthFunc(gl::LESS);
             gl::Enable(gl::CULL_FACE);
             gl::Disable(gl::MULTISAMPLE);
             gl::Enable(gl::BLEND);
@@ -141,7 +143,7 @@ fn main() {
 
             unsafe {
                 gl::ClearColor(0.163, 0.163, 0.163, 1.0);
-                gl::Clear(gl::COLOR_BUFFER_BIT);
+                gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
 
                 // Issue the necessary commands to draw your scene here
 
