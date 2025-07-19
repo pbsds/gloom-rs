@@ -24,6 +24,17 @@ pub enum ShaderType {
     Geometry,
 }
 
+impl Shader {
+    // Make sure the shader is active before calling this
+    pub unsafe fn get_uniform_location(&self, name: &str) -> i32 {
+        gl::GetUniformLocation(self.program_id, CString::new(name).expect("CString::new failed").as_ptr())
+    }
+
+    pub unsafe fn activate(&self) {
+        gl::UseProgram(self.program_id);
+    }
+}
+
 impl Into<gl::types::GLenum> for ShaderType {
     fn into(self) -> gl::types::GLenum {
         match self {
@@ -121,6 +132,7 @@ impl ShaderBuilder {
         true
     }
 
+    #[must_use = "The shader program is useless if not stored in a variable."]
     pub unsafe fn link(self) -> Shader {
         for &shader in &self.shaders {
             gl::AttachShader(self.program_id, shader);
