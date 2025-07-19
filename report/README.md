@@ -8,3 +8,6 @@ For example to compile `template.md`, run:
 
     make template.pdf
 
+On Windows, use pandoc directly:
+
+    pandoc template.md -o template.pdf
