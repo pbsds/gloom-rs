@@ -81,7 +81,10 @@ fn main() {
         // == // Set up your VAO here
 
 
-
+        // Basic usage of shader helper
+        // The code below returns a shader object, which contains the field .program_id
+        // The snippet is not enough to do the assignment, and will need to be modified (outside of just using the correct path)
+        // shader::Shaderbuilder::new().attach_file("./path/to/shader").link();
 
         // Used to demonstrate keyboard handling -- feel free to remove
         let mut _arbitrary_number = 0.0;
