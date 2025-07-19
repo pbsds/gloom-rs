@@ -27,7 +27,8 @@ pub enum ShaderType {
 impl Shader {
     // Make sure the shader is active before calling this
     pub unsafe fn get_uniform_location(&self, name: &str) -> i32 {
-        gl::GetUniformLocation(self.program_id, CString::new(name).expect("CString::new failed").as_ptr())
+        let name_cstr = CString::new(name).expect("CString::new failed");
+        gl::GetUniformLocation(self.program_id, name_cstr.as_ptr())
     }
 
     pub unsafe fn activate(&self) {
