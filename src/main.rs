@@ -79,7 +79,9 @@ fn main() {
         }
 
         // == // Set up your VAO here
+        unsafe {
 
+        }
 
         // Basic usage of shader helper
         // The code below returns a shader object, which contains the field .program_id
