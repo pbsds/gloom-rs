@@ -77,7 +77,7 @@ fn main() {
 
         // Set up openGL
         unsafe {
-            gl::Enable(gl::DEPTH);
+            gl::Enable(gl::DEPTH_TEST);
             gl::DepthFunc(gl::LESS);
             gl::Enable(gl::CULL_FACE);
             gl::Disable(gl::MULTISAMPLE);
