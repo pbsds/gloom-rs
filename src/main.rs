@@ -168,14 +168,12 @@ fn main() {
             previous_frame_time = now;
 
             // Handle resize events
-            if let Ok(mut new_size) = window_size.lock() {
-                if new_size.2 {
-                    context.resize(glutin::dpi::PhysicalSize::new(new_size.0, new_size.1));
-                    window_aspect_ratio = new_size.0 as f32 / new_size.1 as f32;
-                    (*new_size).2 = false;
-                    println!("Window was resized to {}x{}", new_size.0, new_size.1);
-                    unsafe { gl::Viewport(0, 0, new_size.0 as i32, new_size.1 as i32); }
-                }
+            if let Ok(mut new_size) = window_size.lock() && new_size.2 {
+                context.resize(glutin::dpi::PhysicalSize::new(new_size.0, new_size.1));
+                window_aspect_ratio = new_size.0 as f32 / new_size.1 as f32;
+                (*new_size).2 = false;
+                println!("Window was resized to {}x{}", new_size.0, new_size.1);
+                unsafe { gl::Viewport(0, 0, new_size.0 as i32, new_size.1 as i32); }
             }
 
             // Handle keyboard input
